@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sozialindex Schulen Ruhrgebiet 2024-2026</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --sidebar-width: 380px;
+            --border-color: #dee2e6;
+            --primary: #4361ee;
+            --accent: #f72585;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            height: 100vh;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            overflow: hidden;
+        }
+
+        #sidebar {
+            width: var(--sidebar-width);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 2px 0 15px rgba(0,0,0,0.05);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+        }
+
+        .header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #1a1a2e;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .filters {
+            padding: 24px;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #495057;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            background-color: #fff;
+            color: var(--text-color);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23495057' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+            color: var(--text-color);
+            text-transform: none !important;
+        }
+
+        .checkbox-label input {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .stats-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stats-box .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .stats-box .stat:last-child {
+            margin-bottom: 0;
+            font-weight: 600;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        #content-area {
+            flex-grow: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
+        }
+        
+        .tab {
+            padding: 16px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .tab:hover {
+            color: var(--primary);
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .view-container {
+            flex-grow: 1;
+            display: none;
+            position: relative;
+        }
+        
+        .view-container.active {
+            display: block;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+        
+        #table-view {
+            padding: 24px;
+            overflow-y: auto;
+            background: #fff;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            color: #495057;
+        }
+        
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        tr:hover td {
+            background: #f8f9fa;
+        }
+
+        /* Marker Styles */
+        .school-marker {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 10px;
+            color: white;
+            transition: transform 0.2s;
+        }
+        
+        .school-marker:hover {
+            transform: scale(1.2);
+            z-index: 1000 !important;
+        }
+
+        .marker-changed {
+            animation: pulse 2s infinite;
+            border: 2px solid var(--accent);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(247, 37, 133, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(247, 37, 133, 0); }
+        }
+
+        /* Popup Styles */
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .leaflet-popup-content {
+            font-family: 'Inter', sans-serif;
+            margin: 16px;
+            min-width: 200px;
+        }
+        .popup-header {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+        .popup-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .popup-row-label {
+            color: #6c757d;
+        }
+        .popup-row-value {
+            font-weight: 600;
+        }
+        .popup-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .badge-increase { background: #ffe3e3; color: #c92a2a; }
+        .badge-decrease { background: #d3f9d8; color: #2b8a3e; }
+        .badge-new { background: #e7f5ff; color: #1c7ed6; }
+        
+        /* Legend */
+        .legend {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 13px;
+        }
+        .legend-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .legend-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 8px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="header">
+            <h1>Sozialindex Schulen 2024-2026</h1>
+            <p>Essen, Ratingen, Bochum, Dortmund, Witten, Herdecke</p>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label for="city-filter">Stadt</label>
+                <select id="city-filter">
+                    <option value="all">Alle Städte (6)</option>
+                    <option value="Essen">Essen</option>
+                    <option value="Dortmund">Dortmund</option>
+                    <option value="Bochum">Bochum</option>
+                    <option value="Witten">Witten</option>
+                    <option value="Ratingen">Ratingen</option>
+                    <option value="Herdecke">Herdecke</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="index-filter">Sozialindex (25/26)</label>
+                <select id="index-filter">
+                    <option value="all">Alle Indexstufen</option>
+                    <option value="high">Hoch (7-9)</option>
+                    <option value="medium">Mittel (4-6)</option>
+                    <option value="low">Niedrig (1-3)</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="change-filter">
+                    Nur Schulen mit Index-Veränderung (+/-)
+                </label>
+            </div>
+
+            <div class="stats-box">
+                <div class="stat"><span>Angezeigte Schulen:</span> <span id="stat-visible">0</span></div>
+                <div class="stat"><span>Davon verschlechtert:</span> <span id="stat-worse" style="color: #c92a2a">0</span></div>
+                <div class="stat"><span>Davon verbessert:</span> <span id="stat-better" style="color: #2b8a3e">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="content-area">
+        <div class="tabs">
+            <div class="tab active" data-target="map-view">Kartenansicht</div>
+            <div class="tab" data-target="table-view">Tabellenansicht (Direkter Vergleich)</div>
+        </div>
+        
+        <div id="map-view" class="view-container active">
+            <div id="map"></div>
+        </div>
+        
+        <div id="table-view" class="view-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stadt</th>
+                        <th>Schulnummer</th>
+                        <th>Schulname</th>
+                        <th>Schulform</th>
+                        <th>Index 24/25</th>
+                        <th>Index 25/26</th>
+                        <th>Veränderung</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- dynamically populated -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="data.js"></script>
+    <script>
+        // Init Map centered on the Ruhr area
+        const map = L.map('map').setView([51.4818, 7.2162], 11);
+
+        // Modern map tiles (CartoDB Positron for clean look)
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
+
+        // Color Scale for Index 1-9
+        const indexColors = {
+            '1': '#2b8a3e', // Dark Green
+            '2': '#40c057', // Green
+            '3': '#8ce99a', // Light Green
+            '4': '#ffd43b', // Yellow
+            '5': '#fab005', // Orange/Yellow
+            '6': '#fd7e14', // Orange
+            '7': '#f03e3e', // Red
+            '8': '#c92a2a', // Dark Red
+            '9': '#862e9c', // Purple
+            'ohne': '#adb5bd', // Gray
+            'Neu': '#1c7ed6' // Blue
+        };
+
+        let allSchools = [];
+        let markersGroup = L.layerGroup().addTo(map);
+
+        // Create Custom Legend
+        const legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+            const div = L.DomUtil.create('div', 'legend');
+            div.innerHTML += '<div class="legend-title">Sozialindexstufe</div>';
+            const blocks = [
+                {label: 'Stufe 1-3 (Niedrig)', color: '#40c057'},
+                {label: 'Stufe 4-6 (Mittel)', color: '#fab005'},
+                {label: 'Stufe 7-9 (Hoch)', color: '#f03e3e'},
+            ];
+            blocks.forEach(b => {
+                div.innerHTML += `<div class="legend-row">
+                    <div class="legend-color" style="background: ${b.color}"></div>
+                    <span>${b.label}</span>
+                </div>`;
+            });
+            div.innerHTML += `<div style="margin-top:8px; border-top:1px solid #eee; padding-top:8px;" class="legend-row">
+                    <div class="legend-color" style="border: 2px solid var(--accent); animation: pulse 2s infinite;"></div>
+                    <span>Index hat sich verändert</span>
+                </div>`;
+            return div;
+        };
+        legend.addTo(map);
+
+        // Function to assign pseudo-coordinates for schools without geocoding (for testing)
+        // In reality, we will load the JSON. If a school has no lat/lon but is in a target city,
+        // we group them slightly around the city center.
+        const cityCenters = {
+            'Essen': [51.4556, 7.0116],
+            'Dortmund': [51.5136, 7.4653],
+            'Bochum': [51.4818, 7.2162],
+            'Witten': [51.4402, 7.3364],
+            'Ratingen': [51.2965, 6.8483],
+            'Herdecke': [51.3995, 7.4262]
+        };
+
+        function renderMarkers() {
+            markersGroup.clearLayers();
+            const cityFilter = document.getElementById('city-filter').value;
+            const indexFilter = document.getElementById('index-filter').value;
+            const changeFilter = document.getElementById('change-filter').checked;
+
+            let visibleCount = 0;
+            let worseCount = 0;
+            let betterCount = 0;
+
+            allSchools.forEach(school => {
+                // Formatting
+                const idx25 = school.Index_25_26 || 'ohne';
+                const idx24 = school.Index_24_25 || 'Neu';
+                const diff = school.Difference;
+                
+                // Filtering
+                if (cityFilter !== 'all' && school.City !== cityFilter) return;
+                
+                if (indexFilter !== 'all') {
+                    const i = parseInt(idx25);
+                    if (indexFilter === 'high' && (isNaN(i) || i < 7)) return;
+                    if (indexFilter === 'medium' && (isNaN(i) || i < 4 || i > 6)) return;
+                    if (indexFilter === 'low' && (isNaN(i) || i > 3)) return;
+                }
+
+                const hasChanged = diff !== 'N/A' && diff !== 0 && diff !== "0";
+                const isNew = idx24 === 'Neu';
+                const isSignificantlyDifferent = hasChanged || isNew;
+                
+                if (changeFilter && !isSignificantlyDifferent) return;
+
+                visibleCount++;
+                if (diff > 0) worseCount++; // Index up means higher burden (worse)
+                if (diff < 0) betterCount++; // Index down means lower burden (better)
+
+                // Coordinates
+                let lat = school.lat;
+                let lon = school.lon;
+
+                if (!lat || !lon) {
+                    // Fallback to City Center with scatter
+                    const center = cityCenters[school.City];
+                    if (center) {
+                        lat = center[0] + (Math.random() - 0.5) * 0.05;
+                        lon = center[1] + (Math.random() - 0.5) * 0.05;
+                    } else {
+                        return; // Skip if no coordinate possible
+                    }
+                }
+
+                // Marker appearance
+                const bgColor = indexColors[idx25] || indexColors['ohne'];
+                const extraClass = isSignificantlyDifferent ? 'marker-changed' : '';
+                
+                const icon = L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div class="school-marker ${extraClass}" style="background-color: ${bgColor};">
+                        ${!isNaN(idx25) ? idx25 : '!'}
+                    </div>`,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12],
+                    popupAnchor: [0, -12]
+                });
+
+                // Diff Badge HTML
+                let badgeHtml = '';
+                if (isNew) {
+                    badgeHtml = `<div class="popup-badge badge-new">Neue Schule im Index</div>`;
+                } else if (diff > 0) {
+                    badgeHtml = `<div class="popup-badge badge-increase">Index gestiegen (+${diff}) ➔ Höhere Belastung</div>`;
+                } else if (diff < 0) {
+                    badgeHtml = `<div class="popup-badge badge-decrease">Index gesunken (${diff}) ➔ Geringere Belastung</div>`;
+                }
+
+                const popupContent = `
+                    <div class="popup-header">${school.Schulname}</div>
+                    <div class="popup-row">
+                        <span class="popup-row-label">Schulform:</span>
+                        <span class="popup-row-value">${school.Schulform}</span>
+                    </div>
+                    <div class="popup-row">
+                        <span class="popup-row-label">Schulnummer:</span>
+                        <span class="popup-row-value">${school.Schulnummer}</span>
+                    </div>
+                    <div class="popup-row">
+                        <span class="popup-row-label">Stadt:</span>
+                        <span class="popup-row-value">${school.City}</span>
+                    </div>
+                    <div style="margin: 12px 0; border-top: 1px solid #eee;"></div>
+                    <div class="popup-row">
+                        <span class="popup-row-label">Sozialindex 25/26:</span>
+                        <span class="popup-row-value" style="font-size: 16px; color: ${bgColor}">${idx25}</span>
+                    </div>
+                    <div class="popup-row">
+                        <span class="popup-row-label">Sozialindex 24/25:</span>
+                        <span class="popup-row-value">${idx24}</span>
+                    </div>
+                    ${badgeHtml}
+                `;
+
+                L.marker([lat, lon], {icon: icon})
+                    .bindPopup(popupContent)
+                    .addTo(markersGroup);
+            });
+
+            // Update Stats
+            document.getElementById('stat-visible').textContent = visibleCount;
+            document.getElementById('stat-worse').textContent = worseCount;
+            document.getElementById('stat-better').textContent = betterCount;
+            
+            // Also populate the table based on the same filter
+            // We need to re-filter since the first pass was inside standard forEach logic over the map
+            const filteredArray = allSchools.filter(school => {
+                const idx25 = school.Index_25_26 || 'ohne';
+                const idx24 = school.Index_24_25 || 'Neu';
+                const diff = school.Difference;
+                
+                if (cityFilter !== 'all' && school.City !== cityFilter) return false;
+                
+                if (indexFilter !== 'all') {
+                    const i = parseInt(idx25);
+                    if (indexFilter === 'high' && (isNaN(i) || i < 7)) return false;
+                    if (indexFilter === 'medium' && (isNaN(i) || i < 4 || i > 6)) return false;
+                    if (indexFilter === 'low' && (isNaN(i) || i > 3)) return false;
+                }
+
+                const hasChanged = diff !== 'N/A' && diff !== 0 && diff !== "0";
+                const isNew = idx24 === 'Neu';
+                const isSignificantlyDifferent = hasChanged || isNew;
+                
+                if (changeFilter && !isSignificantlyDifferent) return false;
+                
+                return true;
+            });
+            
+            populateTable(filteredArray);
+        }
+
+        // Tab Switching Logic
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update tabs
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update views
+                document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+                const targetId = tab.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+                
+                // If switching to map, fix size issue
+                if(targetId === 'map-view') {
+                    setTimeout(() => map.invalidateSize(), 50);
+                }
+            });
+        });
+
+        function populateTable(schools) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            schools.forEach(school => {
+                const tr = document.createElement('tr');
+                
+                const idx25 = school.Index_25_26 || 'ohne';
+                const idx24 = school.Index_24_25 || 'Neu';
+                const diff = school.Difference;
+                
+                let diffHtml = '-';
+                if (idx24 === 'Neu') {
+                    diffHtml = '<span style="color: #1c7ed6; font-weight: 600;">Neu</span>';
+                } else if (diff > 0) {
+                    diffHtml = `<span style="color: #c92a2a; font-weight: 600;">+${diff} ➔</span>`;
+                } else if (diff < 0) {
+                    diffHtml = `<span style="color: #2b8a3e; font-weight: 600;">${diff} ↘</span>`;
+                }
+                
+                tr.innerHTML = `
+                    <td>${school.City}</td>
+                    <td>${school.Schulnummer}</td>
+                    <td>${school.Schulname}</td>
+                    <td>${school.Schulform}</td>
+                    <td>${idx24}</td>
+                    <td style="font-weight: bold; color: ${indexColors[idx25] || '#000'}">${idx25}</td>
+                    <td>${diffHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Initialize and Fetch Data
+        if (typeof SCHOOL_DATA !== 'undefined') {
+            allSchools = SCHOOL_DATA;
+            renderMarkers();
+        } else {
+            alert("Daten konnten nicht geladen werden. Bitte stellen Sie sicher, dass data.js existiert.");
+        }
+
+        // Event Listeners for Filters
+        const filtersChanged = () => {
+            renderMarkers();
+        };
+        
+        document.getElementById('city-filter').addEventListener('change', filtersChanged);
+        document.getElementById('index-filter').addEventListener('change', filtersChanged);
+        document.getElementById('change-filter').addEventListener('change', filtersChanged);
+
+    </script>
+</body>
+</html>
