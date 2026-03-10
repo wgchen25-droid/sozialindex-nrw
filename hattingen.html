@@ -649,10 +649,9 @@
                         <span class="popup-row-label">Stadt:</span>
                         <span class="popup-row-value">${school.City}</span>
                     </div>
-                    <div style="margin: 12px 0; border-top: 1px solid #eee;"></div>
                     <div class="popup-row">
                         <span class="popup-row-label">Sozialindex 25/26:</span>
-                        <span class="popup-row-value" style="font-size: 16px; color: ${bgColor}">${idx25}</span>
+                        <span class="popup-row-value" style="font-size: 16px; color: ${indexColors[idx25] || '#000'}">${idx25}</span>
                     </div>
                     <div class="popup-row">
                         <span class="popup-row-label">Sozialindex 24/25:</span>
@@ -661,7 +660,7 @@
                     ${badgeHtml}
                 `;
 
-                L.marker([lat, lon], {icon: icon})
+                L.marker([lat, lon], {icon: markerIcon})
                     .bindPopup(popupContent)
                     .addTo(markersGroup);
             });
