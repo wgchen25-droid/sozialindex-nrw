@@ -5,8 +5,12 @@ def compare_data():
     df24 = pd.read_csv("data_24_25.csv", dtype={'Schulnummer': str, 'Sozialindex': str})
     df25 = pd.read_csv("data_25_26.csv", dtype={'Schulnummer': str, 'Sozialindex': str})
     
-    # Filter for target cities as specified in step 3
-    target_cities = ['Essen', 'Ratingen', 'Bochum', 'Dortmund', 'Witten', 'Herdecke']
+    # Filter for target cities
+    target_cities = [
+        'Essen', 'Bochum', 'Witten', 'Dortmund', 
+        'Mülheim', 'Ratingen', 'Hattingen', 
+        'Sprockhövel', 'Herdecke'
+    ]
     
     # Function to check if Kreis contains target city
     def is_target(kreis):

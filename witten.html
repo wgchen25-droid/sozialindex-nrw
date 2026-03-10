@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sozialindex Schulen Ruhrgebiet 2024-2026</title>
+    <title>Sozialindex Schulen Witten 2024-2026</title>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <!-- Google Fonts -->
@@ -145,18 +145,16 @@
             background: #fff;
             border-bottom: 1px solid var(--border-color);
             padding: 0 24px;
-            gap: 10px;
         }
         
         .tab {
-            padding: 16px 12px;
+            padding: 16px 24px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 14px;
             color: #6c757d;
             border-bottom: 3px solid transparent;
             transition: all 0.2s;
-            white-space: nowrap;
         }
         
         .tab:hover {
@@ -166,27 +164,6 @@
         .tab.active {
             color: var(--primary);
             border-bottom-color: var(--primary);
-        }
-        
-        .city-links {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            color: #adb5bd;
-        }
-        
-        .city-links a {
-            color: var(--primary);
-            text-decoration: none;
-            padding: 4px 8px;
-            background: #f1f3f5;
-            border-radius: 4px;
-        }
-        
-        .city-links a:hover {
-            background: #e9ecef;
         }
 
         .view-container {
@@ -339,27 +316,24 @@
     <div id="sidebar">
         <div class="header">
             <h1>Sozialindex Schulen 2024-2026</h1>
-            <p>Essen, Ratingen, Bochum, Dortmund, Witten, Herdecke</p>
+            <p>Stadt Witten (Offizielle Geodaten)</p>
         </div>
 
         <div class="filters">
-            <div class="filter-group">
+            <div class="filter-group" style="display: none;">
                 <label for="city-filter">Stadt</label>
                 <select id="city-filter">
-                    <option value="all">Alle Städte (9)</option>
+                    <option value="all">Alle Städte (6)</option>
                     <option value="Essen">Essen</option>
-                    <option value="Bochum">Bochum</option>
                     <option value="Dortmund">Dortmund</option>
-                    <option value="Mülheim">Mülheim</option>
-                    <option value="Ratingen">Ratingen</option>
-                    <option value="Hattingen">Hattingen</option>
-                    <option value="Sprockhövel">Sprockhövel</option>
+                    <option value="Bochum">Bochum</option>
                     <option value="Witten">Witten</option>
+                    <option value="Ratingen">Ratingen</option>
                     <option value="Herdecke">Herdecke</option>
                 </select>
             </div>
 
-            <div class="filter-group">
+            <div class="filter-group" style="display: none;">
                 <label for="index-filter">Sozialindex (25/26)</label>
                 <select id="index-filter">
                     <option value="all">Alle Indexstufen</option>
@@ -369,7 +343,7 @@
                 </select>
             </div>
 
-            <div class="filter-group">
+            <div class="filter-group" style="display: none;">
                 <label class="checkbox-label">
                     <input type="checkbox" id="change-filter">
                     Nur Schulen mit Index-Veränderung (+/-)
@@ -388,14 +362,6 @@
         <div class="tabs">
             <div class="tab active" data-target="map-view">Kartenansicht</div>
             <div class="tab" data-target="table-view">Tabellenansicht (Direkter Vergleich)</div>
-            <div class="city-links">
-                Direkt zu: 
-                <a href="essen.html">Essen</a>
-                <a href="bochum.html">Bochum</a>
-                <a href="dortmund.html">Dortmund</a>
-                <a href="witten.html">Witten</a>
-                <a href="mülheim.html">Mülheim</a>
-            </div>
         </div>
         
         <div id="map-view" class="view-container active">
@@ -424,10 +390,10 @@
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    <script src="all_cities_data.js"></script>
+    <script src="witten_data.js"></script>
     <script>
         // Init Map centered on the Ruhr area
-        const map = L.map('map').setView([51.4818, 7.2162], 10);
+        const map = L.map('map').setView([51.439, 7.3365], 13);
 
         // Modern map tiles (CartoDB Positron for clean look)
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {

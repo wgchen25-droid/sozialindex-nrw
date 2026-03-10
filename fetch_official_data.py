@@ -33,28 +33,25 @@ def fetch_and_merge():
             except Exception:
                 pass
 
-    # Now load our filtered schools (which has 388 schools including Essen)
+    # Now load our filtered schools (442 schools)
     with open("filtered_schools.json", "r", encoding="utf-8") as f:
         all_schools = json.load(f)
         
-    essen_schools = []
-    
     for s in all_schools:
-        if s['City'] == 'Essen':
-            s_num = str(s['Schulnummer']).strip()
-            if s_num in geo_dict:
-                s['lat'] = geo_dict[s_num]['lat']
-                s['lon'] = geo_dict[s_num]['lon']
-            else:
-                print(f"Warning: No official coord for {s_num} - {s['Schulname']}")
-            essen_schools.append(s)
+        s_num = str(s['Schulnummer']).strip()
+        if s_num in geo_dict:
+            s['lat'] = geo_dict[s_num]['lat']
+            s['lon'] = geo_dict[s_num]['lon']
+        else:
+            # Fallback if not in official data (unlikely for active schools)
+            print(f"Warning: No official coord for {s_num} - {s['Schulname']}")
 
-    with open("essen_data.js", "w", encoding="utf-8") as f:
+    with open("all_cities_data.js", "w", encoding="utf-8") as f:
         f.write("const SCHOOL_DATA = ")
-        json.dump(essen_schools, f, ensure_ascii=False, indent=2)
+        json.dump(all_schools, f, ensure_ascii=False, indent=2)
         f.write(";\n")
         
-    print(f"Created essen_data.js with {len(essen_schools)} Essen schools using official coordinates.")
+    print(f"Created all_cities_data.js with {len(all_schools)} schools using official coordinates.")
 
 if __name__ == "__main__":
     fetch_and_merge()

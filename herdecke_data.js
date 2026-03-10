@@ -1,0 +1,80 @@
+const SCHOOL_DATA = [
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Grundschule",
+    "Schulnummer": "133024",
+    "Schulname": "Herdecke, GG Hugo Knauer",
+    "Index_25_26": "3",
+    "Index_24_25": "3",
+    "Difference": 0,
+    "City": "Herdecke",
+    "lat": 51.41650631737666,
+    "lon": 7.41530195530687
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Grundschule",
+    "Schulnummer": "133036",
+    "Schulname": "Herdecke, GG Schraberg",
+    "Index_25_26": "1",
+    "Index_24_25": "1",
+    "Difference": 0,
+    "City": "Herdecke",
+    "lat": 51.42406319931364,
+    "lon": 7.426878487864085
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Grundschule",
+    "Schulnummer": "133048",
+    "Schulname": "Herdecke, GG Robert-Bonnermann-Schule",
+    "Index_25_26": "5",
+    "Index_24_25": "5",
+    "Difference": 0,
+    "City": "Herdecke",
+    "lat": 51.401221418163864,
+    "lon": 7.432205446135437
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Grundschule",
+    "Schulnummer": "191723",
+    "Schulname": "Herdecke, GG Werner Richard",
+    "Index_25_26": "3",
+    "Index_24_25": "3",
+    "Difference": 0,
+    "City": "Herdecke",
+    "lat": 51.397188520065704,
+    "lon": 7.4386254133865455
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Realschule",
+    "Schulnummer": "185863",
+    "Schulname": "Herdecke, RS Am Bleichstein",
+    "Index_25_26": "3",
+    "Index_24_25": "3",
+    "Difference": 0,
+    "City": "Herdecke",
+    "lat": 51.39717360629982,
+    "lon": 7.438855928140838
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Gymnasium",
+    "Schulnummer": "169997",
+    "Schulname": "Herdecke, Gym Friedrich-Harkort-Schule",
+    "Index_25_26": "1",
+    "Index_24_25": "1",
+    "Difference": 0,
+    "City": "Herdecke",
+    "lat": 51.39644802906947,
+    "lon": 7.441094412852532
+  }
+];

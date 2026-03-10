@@ -1,0 +1,80 @@
+const SCHOOL_DATA = [
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Grundschule",
+    "Schulnummer": "133115",
+    "Schulname": "Sprockhövel, GG Hobeuken",
+    "Index_25_26": "1",
+    "Index_24_25": "1",
+    "Difference": 0,
+    "City": "Sprockhövel",
+    "lat": 51.323377082270646,
+    "lon": 7.257005637019451
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Grundschule",
+    "Schulnummer": "133127",
+    "Schulname": "Sprockhövel, GG Haßlinghausen",
+    "Index_25_26": "3",
+    "Index_24_25": "3",
+    "Difference": 0,
+    "City": "Sprockhövel",
+    "lat": 51.334136879161356,
+    "lon": 7.284089217386759
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Grundschule",
+    "Schulnummer": "133139",
+    "Schulname": "Sprockhövel, GG Börgersbruch",
+    "Index_25_26": "2",
+    "Index_24_25": "2",
+    "Difference": 0,
+    "City": "Sprockhövel",
+    "lat": 51.36269031107205,
+    "lon": 7.2501265254403835
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Grundschule",
+    "Schulnummer": "133140",
+    "Schulname": "Sprockhövel, GG Gennebreck-Herzkamp",
+    "Index_25_26": "1",
+    "Index_24_25": "1",
+    "Difference": 0,
+    "City": "Sprockhövel",
+    "lat": 51.31263026646869,
+    "lon": 7.206960809967033
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Hauptschule",
+    "Schulnummer": "149548",
+    "Schulname": "Sprockhövel, GH Mathilde-Anneke-Schule",
+    "Index_25_26": "7",
+    "Index_24_25": "7",
+    "Difference": 0,
+    "City": "Sprockhövel",
+    "lat": 51.362317474084534,
+    "lon": 7.248646796938504
+  },
+  {
+    "Bezirksregierung": "BR Arnsberg",
+    "Kreis": "Ennepe-Ruhr-Kreis",
+    "Schulform": "Gesamtschule",
+    "Schulnummer": "189558",
+    "Schulname": "Sprockhövel, GE Wilhelm-Kraft",
+    "Index_25_26": "4",
+    "Index_24_25": "4",
+    "Difference": 0,
+    "City": "Sprockhövel",
+    "lat": 51.334081998778196,
+    "lon": 7.285254096294042
+  }
+];
