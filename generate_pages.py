@@ -63,7 +63,7 @@ def generate_pages():
         
         # Replace data source
         page_content = page_content.replace(
-            '<script src="data.js"></script>',
+            '<script src="all_cities_data.js"></script>',
             f'<script src="{data_filename}"></script>'
         )
         
@@ -72,8 +72,9 @@ def generate_pages():
         # Add all cities to the filter list dynamically in the template or just hide it
         # Let's hide the city filter for individual city pages
         page_content = page_content.replace(
-            '<div class="filter-group">',
-            '<div class="filter-group" style="display: none;">'
+            'class="filter-group">',
+            'class="filter-group" style="display: none;">',
+            1 # Only hide the first filter group (City)
         )
 
         with open(filename, "w", encoding="utf-8") as f:

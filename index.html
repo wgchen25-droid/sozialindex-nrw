@@ -133,6 +133,31 @@
             border-top: 1px solid var(--border-color);
         }
 
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .checkbox-item input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
         #content-area {
             flex-grow: 1;
             height: 100vh;
@@ -370,10 +395,23 @@
             </div>
 
             <div class="filter-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="change-filter">
-                    Nur Schulen mit Index-Veränderung (+/-)
-                </label>
+                <label for="change-filter">Nur mit Veränderung / Neu</label>
+                <select id="change-filter">
+                    <option value="false">Alle Schulen</option>
+                    <option value="true">Nur Veränderungen / Neue Schulen</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Schulform (Mehrfachauswahl)</label>
+                <div class="checkbox-group" id="type-filter-group">
+                    <label class="checkbox-item"><input type="checkbox" value="Grundschule" checked> Grundschule</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Gymnasium" checked> Gymnasium</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Gesamtschule" checked> Gesamtschule</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Realschule" checked> Realschule</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Hauptschule" checked> Hauptschule</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Sekundarschule" checked> Sekundarschule</label>
+                </div>
             </div>
 
             <div class="stats-box">
@@ -494,8 +532,10 @@
             markersGroup.clearLayers();
             const cityFilter = document.getElementById('city-filter').value;
             const indexFilter = document.getElementById('index-filter').value;
-            const changeFilter = document.getElementById('change-filter').checked;
-
+            const changeFilter = document.getElementById('change-filter').value === 'true';
+            
+            const selectedTypes = Array.from(document.querySelectorAll('#type-filter-group input:checked')).map(cb => cb.value);
+            
             let visibleCount = 0;
             let worseCount = 0;
             let betterCount = 0;
@@ -515,6 +555,8 @@
                     if (indexFilter === 'medium' && (isNaN(i) || i < 4 || i > 6)) return;
                     if (indexFilter === 'low' && (isNaN(i) || i > 3)) return;
                 }
+
+                if (selectedTypes.length > 0 && !selectedTypes.includes(school.Schulform)) return;
 
                 const hasChanged = diff !== 'N/A' && diff !== 0 && diff !== "0";
                 const isNew = idx24 === 'Neu';
@@ -617,6 +659,8 @@
                     if (indexFilter === 'low' && (isNaN(i) || i > 3)) return false;
                 }
 
+                if (selectedTypes.length > 0 && !selectedTypes.includes(school.Schulform)) return false;
+
                 const hasChanged = diff !== 'N/A' && diff !== 0 && diff !== "0";
                 const isNew = idx24 === 'Neu';
                 const isSignificantlyDifferent = hasChanged || isNew;
@@ -697,6 +741,9 @@
         document.getElementById('city-filter').addEventListener('change', filtersChanged);
         document.getElementById('index-filter').addEventListener('change', filtersChanged);
         document.getElementById('change-filter').addEventListener('change', filtersChanged);
+        document.querySelectorAll('#type-filter-group input').forEach(cb => {
+            cb.addEventListener('change', filtersChanged);
+        });
 
     </script>
 </body>

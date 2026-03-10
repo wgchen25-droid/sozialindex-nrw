@@ -133,6 +133,31 @@
             border-top: 1px solid var(--border-color);
         }
 
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .checkbox-item input {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
         #content-area {
             flex-grow: 1;
             height: 100vh;
@@ -145,16 +170,18 @@
             background: #fff;
             border-bottom: 1px solid var(--border-color);
             padding: 0 24px;
+            gap: 10px;
         }
         
         .tab {
-            padding: 16px 24px;
+            padding: 16px 12px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             color: #6c757d;
             border-bottom: 3px solid transparent;
             transition: all 0.2s;
+            white-space: nowrap;
         }
         
         .tab:hover {
@@ -164,6 +191,27 @@
         .tab.active {
             color: var(--primary);
             border-bottom-color: var(--primary);
+        }
+        
+        .city-links {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #adb5bd;
+        }
+        
+        .city-links a {
+            color: var(--primary);
+            text-decoration: none;
+            padding: 4px 8px;
+            background: #f1f3f5;
+            border-radius: 4px;
+        }
+        
+        .city-links a:hover {
+            background: #e9ecef;
         }
 
         .view-container {
@@ -323,17 +371,20 @@
             <div class="filter-group" style="display: none;">
                 <label for="city-filter">Stadt</label>
                 <select id="city-filter">
-                    <option value="all">Alle Städte (6)</option>
+                    <option value="all">Alle Städte (9)</option>
                     <option value="Essen">Essen</option>
-                    <option value="Dortmund">Dortmund</option>
                     <option value="Bochum">Bochum</option>
-                    <option value="Witten">Witten</option>
+                    <option value="Dortmund">Dortmund</option>
+                    <option value="Mülheim">Mülheim</option>
                     <option value="Ratingen">Ratingen</option>
+                    <option value="Hattingen">Hattingen</option>
+                    <option value="Sprockhövel">Sprockhövel</option>
+                    <option value="Witten">Witten</option>
                     <option value="Herdecke">Herdecke</option>
                 </select>
             </div>
 
-            <div class="filter-group" style="display: none;">
+            <div class="filter-group">
                 <label for="index-filter">Sozialindex (25/26)</label>
                 <select id="index-filter">
                     <option value="all">Alle Indexstufen</option>
@@ -343,11 +394,24 @@
                 </select>
             </div>
 
-            <div class="filter-group" style="display: none;">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="change-filter">
-                    Nur Schulen mit Index-Veränderung (+/-)
-                </label>
+            <div class="filter-group">
+                <label for="change-filter">Nur mit Veränderung / Neu</label>
+                <select id="change-filter">
+                    <option value="false">Alle Schulen</option>
+                    <option value="true">Nur Veränderungen / Neue Schulen</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Schulform (Mehrfachauswahl)</label>
+                <div class="checkbox-group" id="type-filter-group">
+                    <label class="checkbox-item"><input type="checkbox" value="Grundschule" checked> Grundschule</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Gymnasium" checked> Gymnasium</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Gesamtschule" checked> Gesamtschule</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Realschule" checked> Realschule</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Hauptschule" checked> Hauptschule</label>
+                    <label class="checkbox-item"><input type="checkbox" value="Sekundarschule" checked> Sekundarschule</label>
+                </div>
             </div>
 
             <div class="stats-box">
@@ -362,6 +426,14 @@
         <div class="tabs">
             <div class="tab active" data-target="map-view">Kartenansicht</div>
             <div class="tab" data-target="table-view">Tabellenansicht (Direkter Vergleich)</div>
+            <div class="city-links">
+                Direkt zu: 
+                <a href="essen.html">Essen</a>
+                <a href="bochum.html">Bochum</a>
+                <a href="dortmund.html">Dortmund</a>
+                <a href="witten.html">Witten</a>
+                <a href="muelheim.html">Mülheim</a>
+            </div>
         </div>
         
         <div id="map-view" class="view-container active">
@@ -393,7 +465,7 @@
     <script src="bochum_data.js"></script>
     <script>
         // Init Map centered on the Ruhr area
-        const map = L.map('map').setView([51.4818, 7.2162], 12);
+        const map = L.map('map').setView([51.4818, 7.2162], 10);
 
         // Modern map tiles (CartoDB Positron for clean look)
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -460,8 +532,10 @@
             markersGroup.clearLayers();
             const cityFilter = document.getElementById('city-filter').value;
             const indexFilter = document.getElementById('index-filter').value;
-            const changeFilter = document.getElementById('change-filter').checked;
-
+            const changeFilter = document.getElementById('change-filter').value === 'true';
+            
+            const selectedTypes = Array.from(document.querySelectorAll('#type-filter-group input:checked')).map(cb => cb.value);
+            
             let visibleCount = 0;
             let worseCount = 0;
             let betterCount = 0;
@@ -481,6 +555,8 @@
                     if (indexFilter === 'medium' && (isNaN(i) || i < 4 || i > 6)) return;
                     if (indexFilter === 'low' && (isNaN(i) || i > 3)) return;
                 }
+
+                if (selectedTypes.length > 0 && !selectedTypes.includes(school.Schulform)) return;
 
                 const hasChanged = diff !== 'N/A' && diff !== 0 && diff !== "0";
                 const isNew = idx24 === 'Neu';
@@ -583,6 +659,8 @@
                     if (indexFilter === 'low' && (isNaN(i) || i > 3)) return false;
                 }
 
+                if (selectedTypes.length > 0 && !selectedTypes.includes(school.Schulform)) return false;
+
                 const hasChanged = diff !== 'N/A' && diff !== 0 && diff !== "0";
                 const isNew = idx24 === 'Neu';
                 const isSignificantlyDifferent = hasChanged || isNew;
@@ -663,6 +741,9 @@
         document.getElementById('city-filter').addEventListener('change', filtersChanged);
         document.getElementById('index-filter').addEventListener('change', filtersChanged);
         document.getElementById('change-filter').addEventListener('change', filtersChanged);
+        document.querySelectorAll('#type-filter-group input').forEach(cb => {
+            cb.addEventListener('change', filtersChanged);
+        });
 
     </script>
 </body>
